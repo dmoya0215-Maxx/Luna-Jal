@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestionar Usuarios - Luna{% endblock %}
+{% block page_title %}Usuarios{% endblock %}
+{% block breadcrumb_current %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+        <div>
+            <p class="text-muted" style="margin:0">Administra los usuarios del sistema.</p>
+        </div>
+        <a href="{% url 'create_user' %}" class="btn btn-primary"><i data-lucide="user-plus"></i> Crear Nuevo Usuario</a>
+    </div>
+
+    {% if form %}
+    <div class="card" style="margin-bottom:12px;">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0">Crear Nuevo Usuario</h3>
+        </div>
+        <form method="post" action="{% url 'create_user' %}" style="padding:16px">
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="alert alert-error">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>{% endif %}
+
+            <div class="form-row">
+                <div class="field">
+                    <label class="label" for="{{ form.nombre.id_for_label }}">Nombre de Usuario <span style="color:var(--danger)">*</span></label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}<div class="error">{{ form.nombre.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.contraseña.id_for_label }}">Contraseña <span style="color:var(--danger)">*</span></label>
+                    {{ form.contraseña }}
+                    {% if form.contraseña.errors %}<div class="error">{{ form.contraseña.errors.0 }}</div>{% endif %}
+                    <div class="field-help">La contraseña se almacenará de forma segura mediante hash</div>
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.cargo.id_for_label }}">Cargo <span style="color:var(--danger)">*</span></label>
+                    {{ form.cargo }}
+                    {% if form.cargo.errors %}<div class="error">{{ form.cargo.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                <a href="{% url 'user' %}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        {% if user %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre de Usuario</th>
+                            <th>Cargo</th>
+                            <th>Creado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in user %}
+                        <tr>
+                            <td><strong>#{{ item.id }}</strong></td>
+                            <td>{{ item.nombre }}</td>
+                            <td><span class="badge">{{ item.cargo }}</span></td>
+                            <td class="text-muted">{{ item.fecha_creacion|date:"d/m/Y H:i"|default:"—" }}</td>
+                            <td>
+                                <div style="display:flex;gap:8px">
+                                    <a href="{% url 'update_user' item.id %}" class="action-btn action-edit" title="Editar usuario">
+                                        <i data-lucide="pencil"></i>
+                                        <span>Editar</span>
+                                    </a>
+                                    <a href="{% url 'delete_user' item.id %}" class="action-btn action-delete" title="Eliminar usuario">
+                                        <i data-lucide="trash-2"></i>
+                                        <span>Eliminar</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align:center;padding:18px">
+                <div style="font-size:36px;color:var(--muted)"><i data-lucide="inbox"></i></div>
+                <h3>No hay usuarios registrados</h3>
+                <a href="{% url 'create_user' %}" class="btn btn-primary" style="margin-top:10px">Crear Primer Usuario</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

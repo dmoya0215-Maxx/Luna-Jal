@@ -1,0 +1,134 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Personas - Luna{% endblock %}
+{% block page_title %}Personas{% endblock %}
+{% block breadcrumb_current %}Personas{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+        <div>
+            <p class="text-muted" style="margin:0">Administra y consulta las personas registradas en Luna.</p>
+        </div>
+        <a href="{% url 'createperson' %}" class="btn btn-primary"><i data-lucide="user-plus"></i> Agregar persona</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="form-card" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;flex-wrap:wrap">
+            <div>
+                <div class="filter-kicker text-muted">BÚSQUEDA</div>
+                <h3 style="margin:4px 0">Filtrar personas</h3>
+            </div>
+            <div class="text-muted"><i data-lucide="search"></i></div>
+        </div>
+
+        <form method="get" action="{% url 'readperson' %}" class="person-filter-form">
+            <div class="form-row">
+                <div class="field">
+                    <label class="label" for="urbanizacion">Urbanización</label>
+                    <select name="urbanizacion" id="urbanizacion" class="input">
+                        <option value="">Todas las urbanizaciones</option>
+                        {% for urbanizacion in urbanizaciones %}
+                            <option value="{{ urbanizacion }}" {% if urbanizacion_actual == urbanizacion %}selected{% endif %}>{{ urbanizacion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="referido_por">Referido por</label>
+                    <select name="referido_por" id="referido_por" class="input">
+                        <option value="">Todos los referentes</option>
+                        {% for persona in personas_referentes %}
+                            <option value="{{ persona.id }}" {% if referido_actual == persona.id|stringformat:"s" %}selected{% endif %}>{{ persona.nombre }} {{ persona.apellido }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary"><i data-lucide="search"></i> Buscar</button>
+                <a href="{% url 'readperson' %}" class="btn btn-outline">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:12px;flex-wrap:wrap">
+            <div>
+                <div class="table-kicker text-muted">REGISTROS</div>
+                <h3 style="margin:4px 0">Personas registradas</h3>
+            </div>
+            {% if person %}<div class="text-muted">{{ person|length }} registros</div>{% endif %}
+        </div>
+
+        {% if person %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Persona</th>
+                        <th>Referido por</th>
+                        <th>Urbanización</th>
+                        <th>Fecha de registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in person %}
+                    <tr>
+                        <td>#{{ item.id }}</td>
+                        <td>
+                            <div style="display:flex;gap:10px;align-items:center">
+                                <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;color:white">{{ item.nombre|first|upper }}</div>
+                                <div>
+                                    <strong>{{ item.nombre }} {{ item.apellido }}</strong>
+                                    <div class="text-muted">{{ item.telefono }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if item.referido_por %}
+                                <div class="text-muted"><i data-lucide="corner-up-right"></i> {{ item.referido_por.nombre }} {{ item.referido_por.apellido }}</div>
+                            {% else %}
+                                <div class="text-muted">Sin referente</div>
+                            {% endif %}
+                        </td>
+                        <td><span class="text-muted">{{ item.urbanizacion }}</span></td>
+                        <td><span class="text-muted">{{ item.fecha_creacion|date:"d/m/Y" }}</span></td>
+                        <td>
+                            <div style="display:flex;gap:8px">
+                                <a href="{% url 'updateperson' item.id %}" class="action-btn action-edit" title="Editar persona" aria-label="Editar persona">
+                                    <i data-lucide="pencil"></i>
+                                    <span>Editar</span>
+                                </a>
+                                <a href="{% url 'deleteperson' item.id %}" class="action-btn action-delete" title="Eliminar persona" aria-label="Eliminar persona">
+                                    <i data-lucide="trash-2"></i>
+                                    <span>Eliminar</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:28px">
+            <div style="font-size:40px;color:var(--muted)"><i data-lucide="user-check"></i></div>
+            <h3>No hay personas registradas</h3>
+            <p class="text-muted">Todavía no existen personas que coincidan con los filtros seleccionados.</p>
+            <a href="{% url 'createperson' %}" class="btn btn-primary" style="margin-top:12px">Registrar primera persona</a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,57 @@
+<aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu lateral">
+    <div class="sidebar-top">
+        <div class="sidebar-brand">
+            <span class="logo" aria-hidden="true">
+                <i data-lucide="moon" stroke-width="1.8"></i>
+            </span>
+            <div class="brand-text">
+                <strong class="brand-name">Luna</strong>
+                <span class="brand-sub">Sistema de Gestión</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Secciones principales">
+        <ul>
+            <li>
+                <a href="{% url 'dashboard' %}" class="nav-link {% if 'dashboard' in request.path %}active{% endif %}" aria-current="{% if 'dashboard' in request.path %}page{% endif %}">
+                    <i data-lucide="home"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'user' %}" class="nav-link {% if 'user' in request.path %}active{% endif %}">
+                    <i data-lucide="users"></i>
+                    <span class="nav-label">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'readperson' %}" class="nav-link {% if 'person' in request.path %}active{% endif %}">
+                    <i data-lucide="user-check"></i>
+                    <span class="nav-label">Personas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    {% if logueado or request.user.is_authenticated %}
+    <div class="sidebar-footer">
+        <div class="sidebar-user" role="group" aria-label="Usuario autenticado">
+            {% if logueado %}
+                <div class="sidebar-user-avatar" aria-hidden="true">{{ logueado.nombre|first|upper }}</div>
+                <div class="sidebar-user-info">
+                    <div class="user-name">{{ logueado.nombre }}</div>
+                    <div class="user-role">{{ logueado.rol }}</div>
+                </div>
+            {% else %}
+                <div class="sidebar-user-avatar" aria-hidden="true">{{ request.user.username|first|upper }}</div>
+                <div class="sidebar-user-info">
+                    <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                    <div class="user-role">{{ request.user.is_staff|yesno:"Admin,Usuario" }}</div>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endif %}
+</aside>

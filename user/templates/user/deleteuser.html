@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Usuario - Luna{% endblock %}
+{% block page_title %}Eliminar Usuario{% endblock %}
+{% block breadcrumb_current %}Eliminar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width:720px;margin:28px auto;border-top:4px solid rgba(239,68,68,0.18)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;color:var(--danger)"><i data-lucide="trash-2"></i> Confirmar eliminación</h3>
+        </div>
+
+        <div style="padding:22px">
+            <p style="text-align:center;margin:0 0 12px;font-size:1.05rem">¿Seguro que deseas eliminar permanentemente al usuario?</p>
+
+            <div style="text-align:center;margin:16px 0">
+                <div style="font-size:48px;color:var(--muted)"><i data-lucide="alert-circle"></i></div>
+                <p style="margin:8px 0 0;font-weight:600">{{ user.nombre }}</p>
+                <p class="text-muted" style="margin:6px 0 0"> <span class="badge">{{ user.cargo }}</span></p>
+            </div>
+
+            <div style="background:rgba(239,68,68,0.04);padding:12px;border-radius:8px;border:1px solid rgba(239,68,68,0.08);">
+                <p style="margin:0;color:var(--danger)"><strong>Advertencia:</strong> Esta acción no se puede deshacer. El usuario será eliminado de forma permanente del sistema.</p>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+                <a href="{% url 'user' %}" class="btn btn-outline">Cancelar</a>
+                <form method="post" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Seguro que deseas eliminar este usuario? Esta acción no se puede deshacer.')">Confirmar eliminación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

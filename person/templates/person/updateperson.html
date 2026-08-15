@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Persona - Luna{% endblock %}
+{% block page_title %}Editar Persona{% endblock %}
+{% block breadcrumb_current %}Editar Persona{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div style="margin-bottom:12px">
+        <h2 style="margin:0">Editar Persona</h2>
+        <p class="text-muted">Actualiza los datos de: <strong>{{ object.nombre }}</strong></p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" action="{% url 'updateperson' object.id %}" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-row">
+                {% for field in form %}
+                <div class="field">
+                    <label class="label" for="{{ field.id_for_label }}">{{ field.label }} {% if field.field.required %}<span style="color:var(--danger)">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors.0 }}</div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <div class="field-help">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:14px">
+                <a href="{% url 'readperson' %}" class="btn btn-outline">← Atrás</a>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

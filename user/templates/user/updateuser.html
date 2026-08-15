@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Usuario - Luna{% endblock %}
+{% block page_title %}Editar Usuario{% endblock %}
+{% block breadcrumb_current %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="margin-bottom:8px">
+        <h2 style="margin:0">Editar Usuario</h2>
+        <p class="text-muted">Actualiza los datos del usuario: <strong>{{ user.nombre }}</strong></p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" action="{% url 'update_user' user.id %}" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="field">
+                    <label class="label" for="{{ form.nombre.id_for_label }}">Nombre de Usuario <span style="color:var(--danger)">*</span></label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}<div class="error">{{ form.nombre.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.contraseña.id_for_label }}">Contraseña</label>
+                    {{ form.contraseña }}
+                    {% if form.contraseña.errors %}<div class="error">{{ form.contraseña.errors.0 }}</div>{% endif %}
+                    <div class="field-help">Ingresa una nueva contraseña si deseas cambiarla. Se almacenará de forma segura.</div>
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.cargo.id_for_label }}">Cargo / Rol <span style="color:var(--danger)">*</span></label>
+                    {{ form.cargo }}
+                    {% if form.cargo.errors %}<div class="error">{{ form.cargo.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.fecha_creacion.id_for_label }}">Fecha de creación</label>
+                    {{ form.fecha_creacion }}
+                    {% if form.fecha_creacion.errors %}<div class="error">{{ form.fecha_creacion.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+                <a href="{% url 'user' %}" class="btn btn-outline">← Atrás</a>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb_current %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Statistics cards -->
+    <section class="cards-grid">
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-title">Total Usuarios</div>
+                    <div class="stat-value">{{ total_users|default:'—' }}</div>
+                    <div class="stat-desc">Usuarios registrados en el sistema</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="users"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-title">Total Personas</div>
+                    <div class="stat-value">{{ total_personas|default:'—' }}</div>
+                    <div class="stat-desc">Personas en la base de datos</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="user-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-title">Urbanizaciones</div>
+                    <div class="stat-value">{{ total_urbanizaciones|default:'—' }}</div>
+                    <div class="stat-desc">Zonas/Urbanizaciones registradas</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="map"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-title">Admins</div>
+                    <div class="stat-value">{{ total_admins|default:'—' }}</div>
+                    <div class="stat-desc">Usuarios con rol administrador</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="shield"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-title">Personas referidas</div>
+                    <div class="stat-value">{{ total_referidos|default:'—' }}</div>
+                    <div class="stat-desc">Registros que tienen referido</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="user-plus"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts (optional) -->
+    <section class="card" style="margin-top:10px;">
+        <h3 style="margin-bottom:12px">Actividad reciente</h3>
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start">
+            <div style="min-height:260px">
+                <canvas id="lineChart"></canvas>
+            </div>
+            <div style="display:grid;gap:12px">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <div class="stat-title">Tickets</div>
+                            <div class="stat-value">{{ tickets_open|default:'—' }}</div>
+                        </div>
+                        <div style="width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;color:white">
+                            <i data-lucide="bar-chart-2"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <canvas id="doughnutChart1"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

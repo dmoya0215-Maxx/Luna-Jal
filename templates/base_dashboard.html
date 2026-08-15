@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Luna - Panel{% endblock %}
+
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block page_title %}Panel de control{% endblock %}
+
+{% block content %}
+<!-- File kept as a shim: templates that extended base_dashboard.html will now inherit base.html -->
+{% endblock %}
+
+         ===================================================== -->
+
+    <div class="main-wrapper">
+
+
+        <!-- =================================================
+             TOPBAR
+             ================================================= -->
+
+        <header class="top-navbar">
+
+            <div class="top-navbar-left">
+
+                <!-- BOTÓN MENÚ MÓVIL -->
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Abrir menú"
+                    aria-controls="sidebar"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+
+
+                <!-- BREADCRUMB -->
+                <div class="breadcrumb">
+
+                    <span>
+                        {% block breadcrumb %}
+                            Panel de control
+                        {% endblock %}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIONES DERECHA -->
+            <div class="top-navbar-right">
+
+                <!-- INDICADOR -->
+                <div class="status-indicator">
+
+                    <span class="dot"></span>
+
+                </div>
+
+
+                <!-- USUARIO -->
+                <div class="top-user-badge">
+
+                    <div class="top-avatar">
+                        {{ request.session.logueado.nombre|first|upper }}
+                    </div>
+
+                    <div class="top-user-info">
+
+                        <strong>
+                            {{ request.session.logueado.nombre|default:"admin" }}
+                        </strong>
+
+                        <small>
+                            {{ request.session.logueado.rol|default:"Admin" }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENIDO DE CADA PÁGINA
+             ================================================= -->
+
+        <main class="page-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT DEL MENÚ
+     ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+
+    /*
+     * Verificación
+     */
+
+    console.log("Luna: sistema de navegación cargado");
+    console.log("Botón:", menuToggle);
+    console.log("Sidebar:", sidebar);
+    console.log("Overlay:", sidebarOverlay);
+
+
+    /*
+     * Abrir / cerrar sidebar
+     */
+
+    if (menuToggle && sidebar) {
+
+        menuToggle.addEventListener("click", function () {
+
+            const isOpen = sidebar.classList.toggle("open");
+
+
+            /*
+             * Overlay
+             */
+
+            if (sidebarOverlay) {
+
+                sidebarOverlay.classList.toggle(
+                    "active",
+                    isOpen
+                );
+
+            }
+
+
+            /*
+             * Accesibilidad
+             */
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+        });
+
+    }
+
+
+    /*
+     * Cerrar tocando el overlay
+     */
+
+    if (sidebarOverlay) {
+
+        sidebarOverlay.addEventListener("click", function () {
+
+            sidebar.classList.remove("open");
+
+            sidebarOverlay.classList.remove("active");
+
+            if (menuToggle) {
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Cerrar sidebar al seleccionar una opción
+     * solamente en móvil
+     */
+
+    if (sidebar) {
+
+        const navItems = sidebar.querySelectorAll(".nav-item");
+
+        navItems.forEach(function (item) {
+
+            item.addEventListener("click", function () {
+
+                if (window.innerWidth <= 768) {
+
+                    sidebar.classList.remove("open");
+
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove("active");
+                    }
+
+                    if (menuToggle) {
+
+                        menuToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+
+                }
+
+            });
+
+        });
+
+    }
+
+
+    /*
+     * Si cambia el tamaño de pantalla
+     */
+
+    window.addEventListener("resize", function () {
+
+        if (window.innerWidth > 768) {
+
+            sidebar.classList.remove("open");
+
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.remove("active");
+            }
+
+            if (menuToggle) {
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+
+{% block extra_js %}
+{% endblock %}
+
+
+</body>
+</html>

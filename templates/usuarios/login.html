@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de gestión Luna - Inicia sesión">
+    <title>Iniciar Sesión - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/luna.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card" role="main" aria-label="Formulario de inicio de sesión">
+            <div class="login-brand">
+                <div class="logo">L</div>
+                <div>
+                    <h2 class="login-title">Luna</h2>
+                    <div class="login-sub">Sistema de Gestión</div>
+                </div>
+            </div>
+
+            <form class="login-form" method="POST" action="{% url 'login' %}" autocomplete="on">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="label" for="id_user">Nombre de usuario</label>
+                    <input type="text" id="id_user" name="user" placeholder="Nombre de usuario" required class="input">
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="id_clave">Contraseña</label>
+                    <input type="password" id="id_clave" name="clave" placeholder="Contraseña" required class="input">
+                </div>
+
+                <div class="login-actions">
+                    <button type="submit" class="login-btn">Iniciar sesión</button>
+                </div>
+            </form>
+
+            <div class="login-footer">© 2024 Luna - Sistema de Gestión. Todos los derechos reservados.</div>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container" role="status" aria-live="polite">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}">
+                    <span>{{ message }}</span>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

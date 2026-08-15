@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de gestión Luna - Panel administrativo profesional">
+    <meta name="theme-color" content="#667eea">
+    
+    <title>{% block title %}Luna - Sistema de Gestión{% endblock %}</title>
+
+    <!-- Tipografía -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    {% block extra_css %}{% endblock %}
+
+    <!-- Hoja principal de estilo del sistema Luna (se carga al final para garantizar consistencia visual) -->
+    <link rel="stylesheet" href="{% static 'css/luna.css' %}">
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <!-- Overlay para oscurecer la pantalla cuando se abra el menú en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-layout">
+        <!-- 1. Menú lateral -->
+        {% include 'componentes/sidebar.html' %}
+
+        <div class="main-wrapper">
+            <!-- 2. Barra superior -->
+            <header class="top-navbar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <!-- Botón Hamburguesa en SVG puro (sin FontAwesome) -->
+                    <button type="button" class="hamburger-btn" id="toggleSidebar" aria-label="Abrir menú">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>{% block page_title %}Panel de control{% endblock %}</h1>
+                                <nav class="breadcrumb" aria-label="breadcrumb">
+                                    {% block breadcrumb %}
+                                        <ol>
+                                            <li class="current">{% block breadcrumb_current %}Panel{% endblock %}</li>
+                                        </ol>
+                                    {% endblock %}
+                                </nav>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="top-navbar-right">
+                        <div class="status-indicator"><span class="dot" title="Estado del sistema"></span></div>
+                        <div class="top-user-badge" role="group" aria-label="Usuario">
+                            {% if logueado %}
+                            <div>
+                                <div class="top-avatar">{{ logueado.nombre|first|upper }}</div>
+                                <div class="top-user-text">
+                                    <div class="top-user-name">{{ logueado.nombre }}</div>
+                                    <div class="top-user-role">{{ logueado.rol }}</div>
+                                </div>
+                            </div>
+                            {% elif request.user.is_authenticated %}
+                            <div>
+                                <div class="top-avatar">{{ request.user.username|first|upper }}</div>
+                                <div class="top-user-text">
+                                    <div class="top-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                                    <div class="top-user-role">{{ request.user.is_staff|yesno:"Admin,Usuario" }}</div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div>
+                                <div class="top-avatar">U</div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if logueado or request.user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="btn btn-outline" title="Cerrar sesión" aria-label="Cerrar sesión">Cerrar sesión</a>
+                        {% endif %}
+                </div>
+            </header>
+
+            {% include 'componentes/messages.html' %}
+
+            <main class="page-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <!-- Lucide icons (SVG) -->
+    <script src="https://unpkg.com/lucide/dist/lucide.min.js"></script>
+
+    <script>
+        // Handler ligero para reemplazar iconos y controlar sidebar/overlay
+        document.addEventListener('DOMContentLoaded', function () {
+            try { if (window.lucide) lucide.replace({ 'stroke-width': 1.6 }); } catch(e){}
+
+            const btn = document.getElementById('toggleSidebar') || document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (btn && sidebar) {
+                btn.addEventListener('click', function (e) {
+                    sidebar.classList.toggle('open');
+                    if (overlay) overlay.classList.toggle('active');
+                    btn.setAttribute('aria-expanded', sidebar.classList.contains('open'));
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', function () {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                });
+            }
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

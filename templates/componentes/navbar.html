@@ -1,0 +1,21 @@
+<nav class="navbar">
+    <div class="navbar-left" style="display: flex; align-items: center; gap: 0.85rem;">
+        <!-- Botón Hamburguesa -->
+        <button type="button" class="hamburger-menu" id="toggleSidebar" aria-label="Abrir menú" title="Menú">
+            <span>☰</span>
+        </button>
+
+        <div class="navbar-title">
+            <h1>{{ page_title|default:'Dashboard' }}</h1>
+            {% if page_subtitle %}<p>{{ page_subtitle }}</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="navbar-actions">
+        <!-- Indicador de estado u otros elementos si los usas -->
+        <div class="status-indicator"><span class="dot"></span></div>
+        <div class="top-user-badge">
+            <div class="top-avatar">A</div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,280 @@
+/* ================================
+   Luna - Sistema de Gestión (luna.css)
+   Diseño principal: oscuro, profesional, consistente
+   ================================ */
+
+:root{
+    /* Palette */
+    --bg-main: #050814; /* navy almost black */
+    --bg-elev: #0b1320; /* elevated cards */
+    --bg-soft: #071024;
+    --panel: #0f1724;
+
+    --blue-700: #1e3a8a;
+    --blue-500: #2563eb;
+    --cyan: #06b6d4;
+    --accent: var(--cyan);
+
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+
+    --muted: #94a3b8;
+    --text: #e6eef8;
+    --subtle: rgba(230,238,248,0.06);
+    --border: rgba(255,255,255,0.04);
+
+    /* sizes */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 6px 18px rgba(2,6,23,0.6);
+    --shadow-md: 0 12px 30px rgba(2,6,23,0.65);
+
+    --max-width: 1200px;
+}
+
+/* Reset & base */
+*{box-sizing: border-box}
+html,body{height:100%}
+body{
+    margin:0;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background: linear-gradient(180deg,var(--bg-main) 0%, #061028 60%);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+    overflow:hidden;
+}
+
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Layout */
+.app-layout{display:flex;min-height:100vh;height:100vh;overflow:hidden}
+.sidebar{width:260px;flex:0 0 260px;background:linear-gradient(180deg,var(--bg-elev),var(--panel));border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:16px;transition:all .28s cubic-bezier(.2,.9,.2,1);height:100vh;}
+.sidebar.open{transform:translateX(0)}
+.sidebar-top{display:flex;align-items:center;gap:12px}
+.sidebar-brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:10px;color:white}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{font-size:1.05rem;letter-spacing:.2px}
+.brand-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+
+.sidebar-nav{flex:1;overflow:auto;padding-top:6px}
+.sidebar-nav ul{list-style:none;padding:0;margin:6px 0;display:flex;flex-direction:column;gap:6px}
+.sidebar-nav .nav-link{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;color:var(--muted);font-weight:600;font-size:0.95rem;transition:all .2s ease}
+.sidebar-nav .nav-link i{width:20px;height:20px;opacity:.95}
+.sidebar-nav .nav-link:hover{background:rgba(255,255,255,0.02);color:var(--text)}
+.sidebar-nav .nav-link.active{background:linear-gradient(90deg, rgba(6,182,212,0.08), rgba(37,99,235,0.04));color:var(--accent);box-shadow:inset 4px 0 0 var(--accent);border-left:4px solid var(--accent)}
+
+.sidebar-footer{padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.sidebar-user{display:flex;align-items:center;gap:12px;padding:6px 0}
+.sidebar-user-avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#0ea5b9,#2563eb);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;flex-shrink:0}
+.sidebar-user-info{display:flex;flex-direction:column;min-width:0}
+.user-name{font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:0.78rem;color:var(--muted)}
+.nav-logout{margin-top:4px;color:var(--danger);background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.12)}
+.nav-logout:hover{background:rgba(239,68,68,0.1);color:#fecaca}
+.logout-btn, .btn-outline[title="Cerrar sesión"], .btn-outline[aria-label="Cerrar sesión"]{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(239,68,68,0.6);color:#fecaca;text-align:center;text-decoration:none;transition:all .2s ease}
+.logout-btn:hover, .btn-outline[title="Cerrar sesión"]:hover, .btn-outline[aria-label="Cerrar sesión"]:hover{background:rgba(239,68,68,0.08);color:#fff;border-color:rgba(239,68,68,0.9);text-decoration:none}
+.logout-inline{display:none}
+
+/* main wrapper */
+.main-wrapper{flex:1;display:flex;flex-direction:column;min-height:100vh;height:100vh;min-width:0}
+.top-navbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);flex-shrink:0}
+.hamburger-btn{display:none;align-items:center;justify-content:center;border-radius:8px;border:1px solid transparent;background:transparent;padding:8px;cursor:pointer;color:var(--text)}
+.hamburger-btn svg{width:20px;height:20px}
+
+/* Mostrar el botón hamburguesa sólo en tabletas y móviles */
+@media (max-width: 992px){
+    .hamburger-btn{display:inline-flex}
+}
+
+.page-header{display:flex;align-items:center;gap:16px}
+.page-title h1{font-size:1.05rem;margin:0}
+.breadcrumb{font-size:0.85rem;color:var(--muted)}
+.breadcrumb ol{list-style:none;display:flex;gap:8px;padding:0;margin:0;align-items:center}
+.breadcrumb ol li a{color:var(--muted)}
+.breadcrumb ol li.current{color:var(--text)}
+
+.top-navbar-right{display:flex;align-items:center;gap:12px}
+.status-indicator .dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--success);box-shadow:0 0 6px rgba(16,185,129,0.4)}
+.top-user-badge{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.top-user-badge > div{display:flex;align-items:center;gap:10px}
+.top-avatar{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue-500),var(--accent));display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:white;box-shadow:0 0 0 1px rgba(255,255,255,0.06)}
+.top-user-badge .top-user-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.top-user-badge .top-user-name{font-weight:700;font-size:0.95rem;color:var(--text)}
+.top-user-badge .top-user-role{font-size:0.74rem;color:var(--muted)}
+
+.page-content{padding:24px;flex:1;overflow-y:auto;overflow-x:hidden;background:linear-gradient(180deg, rgba(10,18,32,0.15), rgba(10,18,32,0.02));}
+.container{max-width:var(--max-width);margin:0 auto;width:100%}
+
+/* Cards & stats */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:18px}
+.card{background:var(--bg-elev);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow-sm);transition:transform .18s ease, box-shadow .18s ease}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+.stat-icon{width:44px;height:44px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),#4f46e5);color:white}
+.stat-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:110px}
+.stat-copy{display:flex;flex-direction:column;justify-content:center;gap:6px;flex:1}
+.stat-title{font-size:0.8rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.stat-value{font-size:2.1rem;font-weight:700;color:var(--text);line-height:1.1}
+.stat-desc{font-size:.82rem;color:var(--muted);margin-top:0}
+.stat-value-box{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 24px rgba(6,182,212,0.18);margin-top:4px}
+.stat-number{font-size:2rem;font-weight:700;line-height:1;color:white;display:block}
+.stat-card{padding:18px 18px 16px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:1px solid transparent;font-weight:600;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,var(--accent),var(--blue-500));color:white}
+.btn-primary:hover{filter:brightness(.98);transform:translateY(-2px)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+.btn-danger{background:linear-gradient(90deg,var(--danger),#c8102e);color:white}
+.btn-success{background:linear-gradient(90deg,var(--success),#059669);color:white}
+
+/* Action buttons (edit / delete) ensure icons are visible and accessible */
+.action-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border-radius:8px;border:1px solid transparent;font-size:.8rem;background:transparent;cursor:pointer;white-space:nowrap}
+.action-btn svg{width:16px;height:16px;display:inline-block;stroke-width:1.8}
+.action-btn span{line-height:1}
+.action-edit{background:rgba(6,182,212,0.08);color:var(--cyan);border-color:rgba(6,182,212,0.14)}
+.action-delete{background:rgba(239,68,68,0.08);color:var(--danger);border-color:rgba(239,68,68,0.14)}
+.action-btn:focus{outline:3px solid rgba(6,182,212,0.12);outline-offset:2px}
+
+/* Table component */
+.table-wrap{background:rgba(15,23,36,0.3);border:1px solid var(--border);border-radius:12px;overflow:auto;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+.table{width:100%;border-collapse:collapse;min-width:720px}
+.table th, .table td{padding:12px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+.table thead th{font-size:.9rem;color:var(--muted);background:rgba(255,255,255,0.01)}
+.table tbody tr:hover{background:rgba(255,255,255,0.02)}
+.table .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.action-btn{padding:6px 10px;border-radius:8px;border:1px solid transparent;font-size:.8rem}
+.action-edit{background:rgba(6,182,212,0.08);color:var(--cyan)}
+.action-delete{background:rgba(239,68,68,0.08);color:var(--danger)}
+
+/* Forms */
+.form-card{background:var(--bg-elev);border:1px solid var(--border);border-radius:12px;padding:18px}
+.form-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-row .field{display:flex;flex-direction:column;gap:6px}
+.label{font-size:.85rem;color:var(--muted)}
+/* Style form controls globally inside cards/forms so Django default widgets adopt the theme */
+.card input, .card textarea, .card select,
+.form-card input, .form-card textarea, .form-card select,
+.form-row input, .form-row textarea, .form-row select,
+.container input, .container select, .container textarea,
+input.form-control, input.form-input, input.input, textarea, select {
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:10px 12px;
+    border-radius:8px;
+    color:var(--text);
+    width:100%;
+}
+
+/* Make selects blend in on most browsers */
+.card select, .form-card select, select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%), linear-gradient(to right, rgba(255,255,255,0.02), rgba(255,255,255,0.02));
+    background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px), 100% 0;
+    background-size: 6px 6px, 6px 6px, 1px 100%;
+    background-repeat: no-repeat;
+}
+
+.input:focus, textarea:focus, select:focus, .card input:focus, .form-card input:focus{outline:none;box-shadow:0 6px 24px rgba(6,182,212,0.06);border-color:var(--accent)}
+.field-help{font-size:.82rem;color:var(--muted)}
+.error{color:var(--danger);font-size:.82rem}
+
+/* If browser renders select popup with light theme on some platforms, at least ensure the selected option shows dark overlay */
+select option{background:var(--bg-elev);color:var(--text)}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.3) saturate(1.6);
+    cursor: pointer;
+    opacity: 1;
+}
+input[type="datetime-local"]::-webkit-clear-button,
+input[type="datetime-local"]::-webkit-inner-spin-button {
+    display: none;
+}
+
+/* Alerts / messages */
+.messages-container{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1200;display:flex;flex-direction:column;gap:12px;max-width:360px;width:min(360px,calc(100vw - 24px));align-items:stretch}
+.alert{padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:rgba(15,23,36,0.96);color:var(--text);box-shadow:0 18px 50px rgba(2,6,23,0.55);transform:translateY(-8px) scale(.98);opacity:0;animation:toast-in .28s ease forwards;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-left:4px solid var(--accent);min-height:58px}
+.alert.success, .alert-success{border-left-color:var(--success);background:rgba(16,185,129,0.08)}
+.alert.error, .alert-danger, .alert-error{border-left-color:var(--danger);background:rgba(239,68,68,0.08)}
+.alert.info, .alert-info{border-left-color:var(--accent);background:rgba(6,182,212,0.08)}
+.alert.warning, .alert-warning{border-left-color:var(--warning);background:rgba(245,158,11,0.08)}
+.close-btn{background:transparent;border:none;color:var(--text);opacity:.75;cursor:pointer;font-size:1.1rem;line-height:1;padding:0 2px}
+.close-btn:hover{opacity:1}
+@keyframes toast-in{to{transform:translateY(0) scale(1);opacity:1}}
+
+/* Responsive */
+@media (max-width: 992px){
+    .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:1100;transform:translateX(-110%);width:300px}
+    .sidebar.open{transform:translateX(0)}
+    .main-wrapper{margin-left:0}
+    .page-content{padding:16px}
+    .logout-inline{display:inline-flex}
+}
+
+@media (min-width: 993px){
+    .logout-inline{display:none}
+}
+
+@media (max-width: 720px){
+    .form-row{grid-template-columns:1fr}
+    .cards-grid{grid-template-columns:repeat(1,1fr)}
+    .table{min-width:600px}
+    .top-navbar{padding:12px 14px;height:auto;flex-wrap:wrap;gap:8px}
+    .top-navbar-right{width:100%;justify-content:space-between;gap:8px}
+    .top-user-badge{flex:1}
+    .page-content{padding:14px}
+    .container{width:100%;max-width:100%}
+    .form-card, .card{padding:14px}
+    .request-actions, .filter-actions, .persona-header, .table-header{flex-direction:column !important;align-items:flex-start !important}
+    .request-actions .btn, .filter-actions .btn, .persona-header .btn, .table-header .btn{width:100%;justify-content:center}
+    .form-card input, .form-card select, .form-card textarea,
+    .card input, .card select, .card textarea,
+    .field input, .field select, .field textarea{
+        font-size:16px
+    }
+}
+
+@media (max-width: 480px){
+    .sidebar{width:86vw}
+    .brand-name{font-size:1rem}
+    .brand-sub{font-size:0.72rem}
+    .top-user-badge > div{gap:8px}
+    .top-user-badge .top-avatar{width:34px;height:34px;font-size:.78rem}
+    .top-user-badge .top-user-text{font-size:.76rem}
+    .top-user-badge .top-user-role{font-size:.68rem}
+    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
+/* Sidebar overlay */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:1050}
+.sidebar-overlay.active{opacity:1;pointer-events:auto}
+
+/* Ensure icons (Lucide) are always visible even when other CSS tries to shrink them */
+svg[role="img"], i[data-lucide], svg {width:auto;height:auto;}
+.action-btn svg{width:18px!important;height:18px!important;display:inline-block!important}
+
+/* Avoid rule duplication from older dashboard.css by increasing specificity for form/table components */
+.form-card, .card, .table-wrap {background:var(--bg-elev);}
+.table th, .table td{color:var(--text)!important}
+
+
+/* Utility */
+.text-muted{color:var(--muted)}
+.center{display:flex;align-items:center;justify-content:center}
+
+/* small helpers for form spacing */
+.mb-1{margin-bottom:8px}
+.mb-2{margin-bottom:12px}
+.mt-1{margin-top:8px}
+
+/* Focus outline for accessibility */
+:focus{outline:3px solid rgba(6,182,212,0.12);outline-offset:2px}

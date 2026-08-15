@@ -1,0 +1,673 @@
+<!-- ============================================
+     COMPONENTES ADICIONALES REUTILIZABLES
+     ============================================ -->
+
+<!-- COMPONENTE 1: MODAL MODERNO -->
+<div id="miModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Título del Modal</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Tu contenido aquí -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost">Cancelar</button>
+            <button class="btn btn-primary">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal.hidden {
+        display: none;
+    }
+
+    .modal-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        position: relative;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        min-width: 300px;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        animation: slideUp 0.3s ease;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+</style>
+
+<!-- COMPONENTE 2: TABLA RESPONSIVA -->
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#001</td>
+                <td>Juan Pérez</td>
+                <td>juan@example.com</td>
+                <td><span class="badge badge-success">Activo</span></td>
+                <td>
+                    <button class="btn btn-sm btn-ghost">Editar</button>
+                    <button class="btn btn-sm btn-ghost">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .table-container {
+        overflow-x: auto;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table thead {
+        background: rgba(100, 200, 255, 0.1);
+    }
+
+    .data-table th {
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .data-table td {
+        padding: 12px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .data-table tbody tr:hover {
+        background: rgba(100, 200, 255, 0.05);
+    }
+
+    @media (max-width: 768px) {
+        .data-table {
+            font-size: 12px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 8px;
+        }
+    }
+</style>
+
+<!-- COMPONENTE 3: TARJETA DE PERFIL -->
+<div class="profile-card">
+    <div class="profile-header">
+        <img src="https://via.placeholder.com/100" alt="Avatar" class="profile-avatar">
+    </div>
+    <div class="profile-body">
+        <h3>Nombre del Usuario</h3>
+        <p>Admin</p>
+        <div class="profile-stats">
+            <div class="stat-item">
+                <span class="stat-label">Proyectos</span>
+                <span class="stat-number">12</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Tareas</span>
+                <span class="stat-number">28</span>
+            </div>
+        </div>
+    </div>
+    <div class="profile-footer">
+        <button class="btn btn-primary" style="width: 100%;">Editar Perfil</button>
+    </div>
+</div>
+
+<style>
+    .profile-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-align: center;
+        transition: all var(--transition-normal);
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(100, 200, 255, 0.1);
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(255, 0, 110, 0.2));
+        padding: 20px;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid var(--primary-color);
+    }
+
+    .profile-body {
+        padding: 20px;
+    }
+
+    .profile-body h3 {
+        color: var(--text-primary);
+        margin-bottom: 5px;
+    }
+
+    .profile-body p {
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+    }
+
+    .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .stat-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .profile-footer {
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+</style>
+
+<!-- COMPONENTE 4: NOTIFICACIONES TOAST -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+    function showToast(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Animación de entrada
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Eliminar después del tiempo
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                container.removeChild(toast);
+            }, 300);
+        }, duration);
+    }
+
+    // Ejemplos de uso:
+    // showToast('¡Operación exitosa!', 'success');
+    // showToast('Ha ocurrido un error', 'error');
+    // showToast('Información importante', 'info');
+    // showToast('Advertencia', 'warning');
+</script>
+
+<style>
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
+
+    .toast {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-left: 4px solid var(--primary-color);
+        border-radius: var(--radius-md);
+        padding: 15px 20px;
+        color: var(--text-primary);
+        font-size: 14px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        pointer-events: auto;
+        opacity: 0;
+        transform: translateX(400px);
+        transition: all 0.3s ease;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-success {
+        border-left-color: #00ff88;
+    }
+
+    .toast-error {
+        border-left-color: #ff3366;
+    }
+
+    .toast-warning {
+        border-left-color: #ffaa00;
+    }
+
+    .toast-info {
+        border-left-color: #64c8ff;
+    }
+
+    @media (max-width: 768px) {
+        .toast-container {
+            left: 10px;
+            right: 10px;
+        }
+
+        .toast {
+            width: calc(100% - 20px);
+        }
+    }
+</style>
+
+<!-- COMPONENTE 5: FORMULARIO DE CONTACTO -->
+<form class="contact-form" id="contactForm">
+    <div class="form-group">
+        <label for="name">Nombre</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+
+    <div class="form-group">
+        <label for="subject">Asunto</label>
+        <input type="text" id="subject" name="subject" required>
+    </div>
+
+    <div class="form-group">
+        <label for="message">Mensaje</label>
+        <textarea id="message" name="message" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+</form>
+
+<style>
+    .contact-form {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 14px;
+    }
+</style>
+
+<!-- COMPONENTE 6: INDICADOR DE CARGA -->
+<div class="spinner"></div>
+
+<style>
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(100, 200, 255, 0.2);
+        border-top-color: #64c8ff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<!-- COMPONENTE 7: BREADCRUMB NAVIGATION -->
+<nav class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="separator">/</span>
+    <a href="/dashboard">Dashboard</a>
+    <span class="separator">/</span>
+    <span class="current">Configuración</span>
+</nav>
+
+<style>
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 0;
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color var(--transition-fast);
+    }
+
+    .breadcrumb a:hover {
+        color: var(--secondary-color);
+    }
+
+    .breadcrumb .separator {
+        color: var(--text-secondary);
+    }
+
+    .breadcrumb .current {
+        color: var(--text-primary);
+    }
+</style>
+
+<!-- COMPONENTE 8: PAGINACIÓN -->
+<div class="pagination">
+    <a href="#" class="pagination-item prev">&laquo; Anterior</a>
+    <a href="#" class="pagination-item active">1</a>
+    <a href="#" class="pagination-item">2</a>
+    <a href="#" class="pagination-item">3</a>
+    <span class="pagination-item dots">...</span>
+    <a href="#" class="pagination-item">10</a>
+    <a href="#" class="pagination-item next">Siguiente &raquo;</a>
+</div>
+
+<style>
+    .pagination {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .pagination-item {
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all var(--transition-fast);
+    }
+
+    .pagination-item:hover:not(.dots):not(.active) {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .pagination-item.active {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-color: transparent;
+        color: white;
+    }
+
+    .pagination-item.dots {
+        border: none;
+        cursor: default;
+    }
+
+    .pagination-item.prev,
+    .pagination-item.next {
+        width: auto;
+        padding: 0 15px;
+    }
+</style>
+
+<!-- COMPONENTE 9: BADGE CON AVATAR -->
+<div class="user-badge">
+    <img src="https://via.placeholder.com/32" alt="User">
+    <div class="badge-info">
+        <p class="badge-name">Juan Pérez</p>
+        <p class="badge-role">Administrador</p>
+    </div>
+</div>
+
+<style>
+    .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(100, 200, 255, 0.1);
+        border: 1px solid var(--border-color);
+        padding: 10px 15px;
+        border-radius: var(--radius-md);
+    }
+
+    .user-badge img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+    }
+
+    .badge-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .badge-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .badge-role {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+</style>
+
+<!-- COMPONENTE 10: TARJETA DE CARACTERÍSTICA -->
+<div class="feature-card">
+    <div class="feature-icon">📊</div>
+    <h3>Análisis Avanzado</h3>
+    <p>Obtén insights profundos con nuestras herramientas de análisis en tiempo real</p>
+    <a href="#" class="feature-link">Conocer más →</a>
+</div>
+
+<style>
+    .feature-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        text-align: center;
+        transition: all var(--transition-normal);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--primary-color);
+        box-shadow: 0 15px 40px rgba(100, 200, 255, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: var(--text-primary);
+    }
+
+    .feature-card p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+    }
+
+    .feature-link {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color var(--transition-fast);
+    }
+
+    .feature-link:hover {
+        color: var(--secondary-color);
+    }
+</style>
+
+<!-- ============================================
+     EJEMPLOS DE USO EN JAVASCRIPT
+     ============================================ -->
+
+<script>
+    // Abrir Modal
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    // Cerrar Modal
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Ejemplo de Notificación
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar toast
+        // showToast('¡Bienvenido!', 'success', 2000);
+
+        // Cerrar modal con botón
+        const closeBtn = document.querySelector('.modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                this.closest('.modal').classList.add('hidden');
+            });
+        }
+
+        // Cerrar modal al hacer clic en overlay
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            const overlay = modal.querySelector('.modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    modal.classList.add('hidden');
+                });
+            }
+        });
+    });
+</script>
+
+---
+
+## Cómo Usar Estos Componentes:
+
+1. **Copia el HTML** de cualquier componente que necesites
+2. **Incluye los estilos** (están dentro de tags `<style>`)
+3. **Adapta el JavaScript** según tus necesidades
+4. **Personaliza colores** según tu paleta de colores
+
+Todos los componentes están diseñados para ser reutilizables y responsivos. ¡Disfrútalos! 🚀

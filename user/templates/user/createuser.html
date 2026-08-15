@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Usuario - Luna{% endblock %}
+{% block page_title %}Crear Usuario{% endblock %}
+{% block breadcrumb_current %}Crear Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="margin-bottom:12px">
+        <h2 style="margin:0">Crear Nuevo Usuario</h2>
+        <p class="text-muted" style="margin:6px 0 0">Complete el formulario para agregar un nuevo usuario al sistema</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" action="{% url 'create_user' %}" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="field">
+                    <label class="label" for="{{ form.nombre.id_for_label }}">Nombre de Usuario <span style="color:var(--danger)">*</span></label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}<div class="error">{{ form.nombre.errors.0 }}</div>{% endif %}
+                    <div class="field-help">Debe ser único en el sistema. Mínimo 3 caracteres.</div>
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.contraseña.id_for_label }}">Contraseña <span style="color:var(--danger)">*</span></label>
+                    {{ form.contraseña }}
+                    {% if form.contraseña.errors %}<div class="error">{{ form.contraseña.errors.0 }}</div>{% endif %}
+                    <div class="field-help">La contraseña será almacenada de forma segura mediante hash bcrypt. No será almacenada en texto plano.</div>
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.cargo.id_for_label }}">Cargo / Rol <span style="color:var(--danger)">*</span></label>
+                    {{ form.cargo }}
+                    {% if form.cargo.errors %}<div class="error">{{ form.cargo.errors.0 }}</div>{% endif %}
+                    <div class="field-help">Selecciona el rol que tendrá este usuario en el sistema</div>
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.fecha_creacion.id_for_label }}">Fecha de creación</label>
+                    {{ form.fecha_creacion }}
+                    {% if form.fecha_creacion.errors %}<div class="error">{{ form.fecha_creacion.errors.0 }}</div>{% endif %}
+                    <div class="field-help">Puedes dejarla vacía para usar la fecha actual.</div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+                <a href="{% url 'user' %}" class="btn btn-outline">← Atrás</a>
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
