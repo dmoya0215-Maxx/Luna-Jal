@@ -221,10 +221,9 @@ Luna/
 │   └── views.py
 ├── manage.py
 ├── COMPONENTES_ADICIONALES.html
-├── INDICE_COMPLETO.md
-├── QUICK_START.md
-├── README_DESIGN.md
-└── ejemplo_views.py
+├── LICENSE
+├── .gitignore
+├── requierements.txt
 ```
 
 ### Descripción breve de carpetas clave
