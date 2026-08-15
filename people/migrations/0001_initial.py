@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('urbanizacion', models.CharField(max_length=100)),
                 ('fecha_creacion', models.DateTimeField(auto_now_add=True)),
                 ('fecha_actualizacion', models.DateTimeField(auto_now=True)),
-                ('referido_por', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='referidos', to='person.person')),
+                ('referido_por', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='referidos', to='people.person')),
             ],
         ),
     ]

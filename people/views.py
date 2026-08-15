@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import models
 from user.decorators import admin_required, login_required_custom
-from .models import Person
+from .models import People
 from .form import PersonForm
 
 @login_required_custom
@@ -11,7 +11,7 @@ def ReadPerson(request):
     urbanizacion = request.GET.get('urbanizacion', '').strip()
     referido_por = request.GET.get('referido_por', '').strip()
 
-    person = Person.objects.all().order_by('id')
+    person = People.objects.all().order_by('id')
 
     # Buscador general
     if buscar:
@@ -37,14 +37,14 @@ def ReadPerson(request):
 
     # Opciones para los filtros
     urbanizaciones = (
-        Person.objects
+        People.objects
         .values_list('urbanizacion', flat=True)
         .distinct()
         .order_by('urbanizacion')
     )
 
     personas_referentes = (
-        Person.objects
+        People.objects
         .filter(referidos__isnull=False)
         .distinct()
         .order_by('nombre', 'apellido')
@@ -81,7 +81,7 @@ def CreatePerson(request):
 @login_required_custom
 @admin_required
 def UpdatePerson(request, id):
-    person = get_object_or_404(Person, id=id)
+    person = get_object_or_404(People, id=id)
     if request.method == "POST":
         form = PersonForm(request.POST, instance=person)
         if form.is_valid():
@@ -100,7 +100,7 @@ def UpdatePerson(request, id):
 @login_required_custom
 @admin_required
 def DeletePerson(request, id):
-    person = get_object_or_404(Person, id=id)
+    person = get_object_or_404(People, id=id)
     if request.method == "POST":
         person.delete()
         messages.success(request, 'Persona eliminada correctamente')

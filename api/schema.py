@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
-from .views import PersonViewSet, UserViewSet
+from .views import PeopleViewSet, UserViewSet
 
 
 person_schema = extend_schema_view(

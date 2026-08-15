@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from user.decorators import login_required_custom
 from user.models import User
-from person.models import Person
+from people.models import People
 
 @login_required_custom
 def dashboard_view(request):
     """Vista del dashboard principal con estadísticas dinámicas"""
     # Obtener estadísticas de la base de datos
     total_usuarios = User.objects.count()
-    total_personas = Person.objects.count()
-    total_urbanizaciones = Person.objects.count()
-    total_referidos = Person.objects.filter(referido_por__isnull=False).count()
+    total_personas = People.objects.count()
+    total_urbanizaciones = People.objects.count()
+    total_referidos = People.objects.filter(referido_por__isnull=False).count()
     usuarios_activos = User.objects.filter(cargo="Admin").count()
     
     context = {

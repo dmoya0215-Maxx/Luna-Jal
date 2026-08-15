@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.hashers import check_password
-from .decorators import admin_required, login_required_custom
+from .decorators import admin_required, cannot_delete_admins, login_required_custom
 from .form import UserForm
 from .models import User
 
@@ -93,6 +93,7 @@ def UpdateUser(request, id):
 
 @login_required_custom
 @admin_required
+@cannot_delete_admins
 def DeleteUser(request, id):
     user = get_object_or_404(User, id=id)
     if request.method == 'POST':

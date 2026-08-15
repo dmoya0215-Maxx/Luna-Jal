@@ -1,6 +1,6 @@
 import re
 from django import forms
-from .models import Person
+from .models import People
 
 
 class PersonForm(forms.ModelForm):
@@ -41,7 +41,7 @@ class PersonForm(forms.ModelForm):
         return urbanizacion
 
     class Meta:
-        model = Person
+        model = People
         fields = [
             'nombre',
             'apellido',
