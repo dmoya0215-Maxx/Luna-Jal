@@ -30,10 +30,13 @@ def ReadPerson(request):
         )
 
     # Filtro por persona que lo refirió
-    if referido_por:
+    if referido_por and referido_por.isdigit():
         person = person.filter(
             referido_por_id=referido_por
         )
+    elif referido_por:
+        # Valor no numérico: no coincide con ningún registro
+        person = person.none()
 
     # Opciones para los filtros
     urbanizaciones = (
@@ -62,7 +65,7 @@ def ReadPerson(request):
     })
 
 @login_required_custom
-@admin_required
+
 def CreatePerson(request):
     if request.method == "POST":
         person = PersonForm(request.POST)
@@ -79,7 +82,7 @@ def CreatePerson(request):
     })
 
 @login_required_custom
-@admin_required
+
 def UpdatePerson(request, id):
     person = get_object_or_404(People, id=id)
     if request.method == "POST":

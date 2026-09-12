@@ -13,7 +13,7 @@
                 <div class="stat-copy">
                     <div class="stat-title">TOTAL DE USUARIOS</div>
                     <div class="stat-value-box">
-                        <span class="stat-number">{{ total_users|default:'1' }}</span>
+                        <span class="stat-number">{{ total_users }}</span>
                     </div>
                     <div class="stat-desc">↑ Actualizado en tiempo real</div>
                 </div>
@@ -25,7 +25,7 @@
                 <div class="stat-copy">
                     <div class="stat-title">TOTAL DE PERSONAS</div>
                     <div class="stat-value-box">
-                        <span class="stat-number">{{ total_personas|default:'4' }}</span>
+                        <span class="stat-number">{{ total_personas }}</span>
                     </div>
                     <div class="stat-desc">↑ Actualizado en tiempo real</div>
                 </div>
@@ -37,7 +37,7 @@
                 <div class="stat-copy">
                     <div class="stat-title">TOTAL URBANIZACIONES</div>
                     <div class="stat-value-box">
-                        <span class="stat-number">{{ total_urbanizaciones|default:'4' }}</span>
+                        <span class="stat-number">{{ total_urbanizaciones }}</span>
                     </div>
                     <div class="stat-desc">↑ Actualizado en tiempo real</div>
                 </div>
@@ -49,7 +49,7 @@
                 <div class="stat-copy">
                     <div class="stat-title">USUARIOS ADMIN</div>
                     <div class="stat-value-box">
-                        <span class="stat-number">{{ total_admins|default:'1' }}</span>
+                        <span class="stat-number">{{ total_admins }}</span>
                     </div>
                     <div class="stat-desc">Cargos administrativos</div>
                 </div>
@@ -61,7 +61,7 @@
                 <div class="stat-copy">
                     <div class="stat-title">PERSONAS REFERIDAS</div>
                     <div class="stat-value-box">
-                        <span class="stat-number">{{ total_referidos|default:'3' }}</span>
+                        <span class="stat-number">{{ total_referidos }}</span>
                     </div>
                     <div class="stat-desc">Total de referencias</div>
                 </div>
@@ -76,4 +76,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %}  

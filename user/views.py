@@ -4,11 +4,25 @@ from django.contrib.auth.hashers import check_password
 from .decorators import admin_required, cannot_delete_admins, login_required_custom
 from .form import UserForm
 from .models import User
+import time
+
+MAX_INTENTOS_LOGIN = 5
+BLOQUEO_SEGUNDOS = 300
+
 
 def login_view(request):
     if request.method == "POST":
-        print("LLEGÓ AL LOGIN")
-        print(request.POST)
+        # Control de fuerza bruta: intentos fallidos registrados en la sesión
+        intentos = int(request.session.get("login_intentos", 0))
+        bloqueado_hasta = request.session.get("login_bloqueado_hasta", 0)
+        if bloqueado_hasta and int(bloqueado_hasta) > int(time.time()):
+            restante = int(bloqueado_hasta) - int(time.time())
+            messages.error(
+                request,
+                f"Demasiados intentos fallidos. Intenta de nuevo en {restante} segundos."
+            )
+            return redirect('login')
+
         usuario = request.POST.get("user", "").strip()
         contra = request.POST.get("clave", "")
         try:
@@ -17,6 +31,10 @@ def login_view(request):
 
             # Paso 2: Verificar contraseña usando check_password()
             if user.check_password(contra):
+                # Regenerar la sesión para evitar fijación de sesión
+                request.session.cycle_key()
+                request.session["login_intentos"] = 0
+                request.session.pop("login_bloqueado_hasta", None)
                 messages.success(request, "Bienvenido al sistema")
                 request.session["logueado"] = {
                     "id": user.id,
@@ -26,15 +44,33 @@ def login_view(request):
                 return redirect("dashboard")
             else:
                 # Contraseña incorrecta
-                messages.error(request, "Usuario o contraseña incorrecto")
-                request.session["logueado"] = None
+                intentos += 1
+                if intentos >= MAX_INTENTOS_LOGIN:
+                    request.session["login_intentos"] = 0
+                    request.session["login_bloqueado_hasta"] = int(time.time()) + BLOQUEO_SEGUNDOS
+                    messages.error(
+                        request,
+                        "Demasiados intentos fallidos. Cuenta bloqueada temporalmente."
+                    )
+                else:
+                    request.session["login_intentos"] = intentos
+                    messages.error(request, "Usuario o contraseña incorrecto")
                 return redirect('login')
-                
+
         except User.DoesNotExist:
             # Usuario no existe
-            messages.error(request, "Usuario o contraseña incorrecto")
-            request.session["logueado"] = None
-            return redirect('login')     
+            intentos += 1
+            if intentos >= MAX_INTENTOS_LOGIN:
+                request.session["login_intentos"] = 0
+                request.session["login_bloqueado_hasta"] = int(time.time()) + BLOQUEO_SEGUNDOS
+                messages.error(
+                    request,
+                    "Demasiados intentos fallidos. Cuenta bloqueada temporalmente."
+                )
+            else:
+                request.session["login_intentos"] = intentos
+                messages.error(request, "Usuario o contraseña incorrecto")
+            return redirect('login')
     else:
         if request.session.get("logueado", False):
             return redirect('dashboard')

@@ -1,5 +1,6 @@
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.core.exceptions import PermissionDenied
 from django.test import RequestFactory, TestCase
 
 from .models import User
@@ -36,9 +37,9 @@ class DeleteUserAccessTests(TestCase):
             session_user={'id': self.admin_user.id, 'nombre': self.admin_user.nombre, 'rol': 'Admin'}
         )
 
-        response = DeleteUser(request, self.admin_user.id)
+        with self.assertRaises(PermissionDenied):
+            DeleteUser(request, self.admin_user.id)
 
-        self.assertEqual(response.status_code, 302)
         self.assertTrue(User.objects.filter(id=self.admin_user.id).exists())
 
     def test_admin_can_delete_a_non_admin_user(self):
