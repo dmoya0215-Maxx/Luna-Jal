@@ -27,6 +27,21 @@
         </div>
 
         <form method="get" action="{% url 'readperson' %}" class="person-filter-form">
+            <div class="field mb-2">
+                <label class="label" for="buscar">Buscar persona</label>
+                <input type="search" name="buscar" id="buscar" class="input"
+                       value="{{ buscar }}"
+                       placeholder="Nombre, apellido, teléfono, correo o urbanización"
+                       autocomplete="off"
+                       maxlength="100">
+                {% if buscar %}
+                    <div class="field-help">
+                        Buscando por «{{ buscar }}»
+                        &mdash; <a href="{% url 'readperson' %}">limpiar</a>
+                    </div>
+                {% endif %}
+            </div>
+
             <div class="form-row">
                 <div class="field">
                     <label class="label" for="urbanizacion">Urbanización</label>
@@ -47,6 +62,33 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="field">
+                    <label class="label" for="lugar_votacion">Lugar de votación</label>
+                    <input type="text" name="lugar_votacion" id="lugar_votacion" class="input"
+                           value="{{ lugar_actual }}"
+                           placeholder="Escriba un lugar"
+                           {% if lugar_actual == 'sin_asignar' %}readonly{% endif %}>
+                    {% if lugar_actual == 'sin_asignar' %}
+                        <div class="field-help">
+                            Mostrando {{ total_sin_lugar }} persona{{ total_sin_lugar|pluralize }}
+                            creada{{ total_sin_lugar|pluralize:"s" }} sin lugar de votación
+                            &mdash; <a href="{% url 'readperson' %}">quitar filtro</a>
+                        </div>
+                    {% elif lugar_actual %}
+                        <div class="field-help">
+                            Filtrando por «{{ lugar_actual }}» &mdash; <a href="{% url 'readperson' %}">quitar filtro</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label class="label">&nbsp;</label>
+                    <a href="?lugar_votacion=sin_asignar{% if buscar %}&buscar={{ buscar }}{% endif %}"
+                       class="btn btn-outline" style="width:100%">
+                        <i data-lucide="circle-slash"></i> Solo sin lugar ({{ total_sin_lugar }})
+                    </a>
+                </div>
             </div>
 
             <div class="filter-actions" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
@@ -63,7 +105,20 @@
                 <div class="table-kicker text-muted">REGISTROS</div>
                 <h3 style="margin:4px 0">Personas registradas</h3>
             </div>
-            {% if person %}<div class="text-muted">{{ person|length }} registros</div>{% endif %}
+            {% if person %}
+            <div class="text-muted">
+                {{ person|length }} registros
+                {% if total_activas %}
+                    · <span style="color:var(--success)">{{ total_activas }} activas</span>
+                {% endif %}
+                {% if total_inactivas %}
+                    · <span style="color:var(--warning)">{{ total_inactivas }} inactivas</span>
+                {% endif %}
+                {% if total_sin_lugar %}
+                    · <span style="color:var(--danger)">{{ total_sin_lugar }} sin lugar de votación</span>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
 
         {% if person %}
@@ -75,13 +130,15 @@
                         <th>Persona</th>
                         <th>Referido por</th>
                         <th>Urbanización</th>
+                        <th>Lugar / Mesa de votación</th>
                         <th>Fecha de registro</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in person %}
-                    <tr>
+                    <tr class="{% if not item.activo %}row-inactive{% endif %}">
                         <td>#{{ item.id }}</td>
                         <td>
                             <div style="display:flex;gap:10px;align-items:center">
@@ -92,6 +149,7 @@
                                 </div>
                             </div>
                         </td>
+
                         <td>
                             {% if item.referido_por %}
                                 <div class="text-muted"><i data-lucide="corner-up-right"></i> {{ item.referido_por.nombre }} {{ item.referido_por.apellido }}</div>
@@ -100,17 +158,46 @@
                             {% endif %}
                         </td>
                         <td><span class="text-muted">{{ item.urbanizacion }}</span></td>
+                        <td>
+                            {% if item.lugar_votacion %}
+                                <div><i data-lucide="map-pin"></i> {{ item.lugar_votacion }}</div>
+                                {% if item.mesa_votacion %}
+                                    <div class="text-muted" style="font-size:.8rem"><i data-lucide="table-2"></i> {{ item.mesa_votacion }}</div>
+                                {% else %}
+                                    <div class="text-muted" style="font-size:.8rem">Sin mesa</div>
+                                {% endif %}
+                            {% else %}
+                                <span class="status-pill status-pill-inactive"><i data-lucide="circle-slash"></i> Sin lugar</span>
+                            {% endif %}
+                        </td>
                         <td><span class="text-muted">{{ item.fecha_creacion|date:"d/m/Y" }}</span></td>
+                        <td>
+                            {% if item.activo %}
+                                <span class="status-pill status-pill-active"><i data-lucide="user-check"></i> Activa</span>
+                            {% else %}
+                                <span class="status-pill status-pill-inactive"><i data-lucide="user-x"></i> Inactiva</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <div style="display:flex;gap:8px">
                                 <a href="{% url 'updateperson' item.id %}" class="action-btn action-edit" title="Editar persona" aria-label="Editar persona">
                                     <i data-lucide="pencil"></i>
                                     <span>Editar</span>
                                 </a>
-                                <a href="{% url 'deleteperson' item.id %}" class="action-btn action-delete" title="Eliminar persona" aria-label="Eliminar persona">
-                                    <i data-lucide="trash-2"></i>
-                                    <span>Eliminar</span>
-                                </a>
+                                {% if item.activo %}
+                                    <a href="{% url 'deactivateperson' item.id %}" class="action-btn action-deactivate" title="Desactivar persona" aria-label="Desactivar persona">
+                                        <i data-lucide="user-x"></i>
+                                        <span>Desactivar</span>
+                                    </a>
+                                {% else %}
+                                    <form method="post" action="{% url 'activateperson' item.id %}" style="display:inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn action-restore" title="Reactivar persona" aria-label="Reactivar persona" onclick="return confirm('¿Reactivar a {{ item.nombre }} {{ item.apellido }}?')">
+                                            <i data-lucide="user-check"></i>
+                                            <span>Reactivar</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>

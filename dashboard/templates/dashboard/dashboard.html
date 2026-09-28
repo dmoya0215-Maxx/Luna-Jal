@@ -7,6 +7,11 @@
 
 {% block content %}
 <div class="container">
+
+    <!-- 1. Resumen general del sistema -->
+    <div class="filter-kicker text-muted" style="margin-bottom:4px">RESUMEN GENERAL</div>
+    <h3 style="margin:0 0 10px">Indicadores del sistema</h3>
+
     <div class="cards-grid" style="margin-top:6px">
         <div class="card stat-card">
             <div class="stat-row">
@@ -27,7 +32,7 @@
                     <div class="stat-value-box">
                         <span class="stat-number">{{ total_personas }}</span>
                     </div>
-                    <div class="stat-desc">↑ Actualizado en tiempo real</div>
+                    <div class="stat-desc">{{ total_activas }} activas · {{ total_inactivas }} inactivas</div>
                 </div>
             </div>
         </div>
@@ -39,7 +44,7 @@
                     <div class="stat-value-box">
                         <span class="stat-number">{{ total_urbanizaciones }}</span>
                     </div>
-                    <div class="stat-desc">↑ Actualizado en tiempo real</div>
+                    <div class="stat-desc">Urbanizaciones y veredas</div>
                 </div>
             </div>
         </div>
@@ -67,13 +72,282 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card" style="margin-top:18px">
-        <div class="card-body">
-            <h3>Bienvenido al panel</h3>
-            <p class="text-muted">Resumen rápido del sistema Luna.</p>
+        <div class="card stat-card" {% if total_sin_lugar %}style="border-color:rgba(239,68,68,0.45);background:rgba(239,68,68,0.05)"{% endif %}>
+            <div class="stat-row">
+                <div class="stat-copy">
+                    <div class="stat-title">SIN LUGAR DE VOTACIÓN</div>
+                    <div class="stat-value-box">
+                        <span class="stat-number" {% if total_sin_lugar %}style="color:var(--danger)"{% endif %}>{{ total_sin_lugar }}</span>
+                    </div>
+                    <div class="stat-desc">{{ porcentaje_sin_lugar }}% del total de personas</div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- 1b. Personas creadas sin lugar de votacion -->
+    <div class="card panel-pending {% if not total_sin_lugar %}is-clear{% endif %}" style="margin-bottom:18px">
+        <div class="panel-pending-head">
+            <div class="panel-pending-title">
+                <span class="panel-pending-icon">
+                    <i data-lucide="{% if total_sin_lugar %}circle-slash{% else %}circle-check{% endif %}"></i>
+                </span>
+                <div>
+                    <div class="panel-pending-kicker">
+                        {% if total_sin_lugar %}Pendiente{% else %}Al dia{% endif %}
+                    </div>
+                    <h3>Personas sin lugar de votacion</h3>
+                    <p>
+                        {% if total_sin_lugar %}
+                            No pudieronUbicar su sede. El campo quedo en NULL.
+                        {% else %}
+                            Todas las personas registradas tienen un lugar de votacion asignado.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="panel-pending-actions">
+                {% if total_sin_lugar %}
+                <a href="{% url 'readperson' %}?lugar_votacion=sin_asignar" class="btn btn-outline">
+                    <i data-lucide="list"></i> Ver todas ({{ total_sin_lugar }})
+                </a>
+                <a href="{% url 'createperson' %}" class="btn btn-primary">
+                    <i data-lucide="user-plus"></i> Registrar
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if total_sin_lugar %}
+        <div class="pending-metrics">
+            <div class="pending-metric">
+                <span class="pending-metric-label">Sin lugar</span>
+                <span class="pending-metric-value is-danger">{{ total_sin_lugar }}</span>
+                <span class="pending-metric-hint">requieren atencion</span>
+            </div>
+            <div class="pending-metric">
+                <span class="pending-metric-label">Con lugar</span>
+                <span class="pending-metric-value is-ok">{{ total_con_lugar }}</span>
+                <span class="pending-metric-hint">del total registrado</span>
+            </div>
+            <div class="pending-metric">
+                <span class="pending-metric-label">Total padrón</span>
+                <span class="pending-metric-value">{{ total_personas }}</span>
+                <span class="pending-metric-hint">personas en el sistema</span>
+            </div>
+            <div class="pending-metric">
+                <span class="pending-metric-label">Inactivas pendientes</span>
+                <span class="pending-metric-value">{{ sin_lugar_inactivas }}</span>
+                <span class="pending-metric-hint">ya dadas de baja</span>
+            </div>
+        </div>
+
+        <div class="pending-track" role="img"
+             aria-label="{{ porcentaje_sin_lugar }} por ciento del padron sin lugar de votacion">
+            <span style="width:{% if porcentaje_sin_lugar > 100 %}100{% else %}{{ porcentaje_sin_lugar }}{% endif %}%"></span>
+        </div>
+        <div class="pending-track-legend">
+            <span>{{ porcentaje_sin_lugar }}% del padron sin lugar</span>
+            <span>{{ total_con_lugar }} de {{ total_personas }} con lugar asignado</span>
+        </div>
+
+        <div class="pending-list">
+            {% for item in sin_lugar %}
+            <div class="pending-item {% if not item.activo %}is-inactive{% endif %}">
+                <span class="avatar-ini" aria-hidden="true">{{ item.iniciales }}</span>
+                <div class="pending-item-body">
+                    <div class="pending-item-name">{{ item.nombre }} {{ item.apellido }}</div>
+                    <div class="pending-item-meta">
+                        <span><i data-lucide="phone"></i>{{ item.telefono }}</span>
+                        <span><i data-lucide="home"></i>{{ item.urbanizacion }}</span>
+                    </div>
+                </div>
+                {% if item.activo %}
+                <span class="status-pill status-pill-active"><i data-lucide="user-check"></i> Activa</span>
+                {% else %}
+                <span class="status-pill status-pill-inactive"><i data-lucide="user-x"></i> Inactiva</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if sin_lugar_restantes %}
+        <div class="pending-foot">
+            <i data-lucide="ellipsis"></i>
+            <span>
+                y {{ sin_lugar_restantes }} persona{{ sin_lugar_restantes|pluralize }} más
+            </span>
+            <a href="{% url 'readperson' %}?lugar_votacion=sin_asignar">Ver el listado completo</a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="panel-empty">
+            <i data-lucide="shield-check"></i>
+            Ninguna persona se registro sin lugar de votacion.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 2. Estado global de las personas -->
+    <div class="card" style="margin-bottom:18px">
+        <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+            <div>
+                <div class="table-kicker text-muted">ESTADO</div>
+                <h3 style="margin:4px 0">Personas activas e inactivas</h3>
+            </div>
+            <div class="text-muted"><i data-lucide="activity"></i></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25)">
+                <div class="stat-icon" style="background:linear-gradient(135deg,#10b981,#0d9488)"><i data-lucide="user-check"></i></div>
+                <div>
+                    <div class="stat-title">ACTIVAS</div>
+                    <div class="stat-value" style="color:var(--success)">{{ total_activas }}</div>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25)">
+                <div class="stat-icon" style="background:linear-gradient(135deg,#f59e0b,#ea580c)"><i data-lucide="user-x"></i></div>
+                <div>
+                    <div class="stat-title">INACTIVAS</div>
+                    <div class="stat-value" style="color:var(--warning)">{{ total_inactivas }}</div>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:var(--subtle);border:1px solid var(--border)">
+                <div class="stat-icon"><i data-lucide="users"></i></div>
+                <div>
+                    <div class="stat-title">TOTAL</div>
+                    <div class="stat-value">{{ total_personas }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:12px;flex-wrap:wrap">
+                <span style="color:var(--success);font-size:.82rem">{{ porcentaje_activas }}% activas</span>
+                <span class="text-muted" style="font-size:.82rem">{{ porcentaje_inactivas }}% inactivas</span>
+            </div>
+            <div style="display:flex;height:12px;border-radius:8px;overflow:hidden;background:var(--subtle)">
+                <div style="width:{{ porcentaje_activas }}%;background:linear-gradient(90deg,#10b981,var(--accent))"></div>
+                <div style="width:{{ porcentaje_inactivas }}%;background:linear-gradient(90deg,var(--warning),#ea580c)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Distribución por urbanización o vereda -->
+    <div class="card">
+        <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+            <div>
+                <div class="table-kicker text-muted">DISTRIBUCIÓN</div>
+                <h3 style="margin:4px 0">Activas e inactivas por urbanización o vereda</h3>
+            </div>
+            <div class="text-muted">
+                {{ total_lugares }} lugares
+                · {{ total_lugares_urbanizacion }} urbanizaciones
+                · {{ total_lugares_vereda }} veredas
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <form method="get" action="{% url 'dashboard' %}" class="person-filter-form" style="margin-bottom:14px">
+            <div class="form-row">
+                <div class="field">
+                    <label class="label" for="buscar">Buscar lugar</label>
+                    <input type="text" name="buscar" id="buscar" class="input" value="{{ buscar }}" placeholder="Ej: Cantares">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="tipo">Tipo</label>
+                    <select name="tipo" id="tipo" class="input">
+                        <option value="">Urbanizaciones y veredas</option>
+                        <option value="urbanizacion" {% if tipo_actual == 'urbanizacion' %}selected{% endif %}>Solo urbanizaciones</option>
+                        <option value="vereda" {% if tipo_actual == 'vereda' %}selected{% endif %}>Solo veredas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary"><i data-lucide="search"></i> Filtrar</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline">Limpiar</a>
+            </div>
+        </form>
+
+        {% if filas %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Urbanización / Vereda</th>
+                        <th>Tipo</th>
+                        <th>Activas</th>
+                        <th>Inactivas</th>
+                        <th>Total</th>
+                        <th>Distribución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in filas %}
+                    <tr>
+                        <td><strong>{{ fila.nombre }}</strong></td>
+                        <td>
+                            {% if fila.es_vereda %}
+                                <span class="status-pill"><i data-lucide="route"></i> Vereda</span>
+                            {% else %}
+                                <span class="status-pill status-pill-active"><i data-lucide="home"></i> Urbanización</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="status-pill status-pill-active">{{ fila.activas }}</span></td>
+                        <td>
+                            {% if fila.inactivas %}
+                                <span class="status-pill status-pill-inactive">{{ fila.inactivas }}</span>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ fila.total }}</strong></td>
+                        <td style="min-width:190px">
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <div style="flex:1;height:8px;border-radius:6px;background:var(--subtle);overflow:hidden">
+                                    <div style="width:{{ fila.porcentaje_activas }}%;height:100%;background:linear-gradient(90deg,var(--accent),#4f46e5)"></div>
+                                </div>
+                                <span class="text-muted" style="font-size:.8rem;white-space:nowrap">{{ fila.porcentaje_activas }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{% url 'readperson' %}?urbanizacion={{ fila.nombre|urlencode }}" class="action-btn action-edit" title="Ver personas de {{ fila.nombre }}" aria-label="Ver personas de {{ fila.nombre }}">
+                                <i data-lucide="eye"></i>
+                                <span>Ver personas</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="background:rgba(255,255,255,0.03)">
+                        <td><strong>Total</strong></td>
+                        <td class="text-muted">{{ total_lugares }} lugares</td>
+                        <td><strong>{{ reportadas_activas }}</strong></td>
+                        <td><strong>{{ reportadas_inactivas }}</strong></td>
+                        <td><strong>{{ reportadas_activas|add:reportadas_inactivas }}</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:28px">
+            <div style="font-size:40px;color:var(--muted)"><i data-lucide="bar-chart-3"></i></div>
+            <h3>No hay datos para mostrar</h3>
+            <p class="text-muted">Todavía no existen personas que coincidan con los filtros seleccionados.</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary" style="margin-top:12px">Limpiar filtros</a>
+        </div>
+        {% endif %}
+    </div>
+
 </div>
-{% endblock %}  
+{% endblock %}

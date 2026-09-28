@@ -12,6 +12,7 @@
         <div class="form-header" style="margin-bottom:12px">
             <h2 style="margin:0">Datos de la Persona</h2>
             <p class="text-muted" style="margin:6px 0 0">Todos los campos marcados con <span style="color:var(--danger)">*</span> son obligatorios</p>
+            <p class="field-help" style="margin:4px 0 0">El lugar y la mesa de votación son opcionales: si los dejas vacíos se guardan sin valor.</p>
         </div>
 
         <form method="post" action="{% url 'createperson' %}" class="" novalidate>
@@ -48,4 +49,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/custom-select.js' %}"></script>
+
 {% endblock %}

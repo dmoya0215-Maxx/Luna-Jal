@@ -10,8 +10,9 @@ def ReadPerson(request):
     buscar = request.GET.get('buscar', '').strip()
     urbanizacion = request.GET.get('urbanizacion', '').strip()
     referido_por = request.GET.get('referido_por', '').strip()
+    lugar_votacion = request.GET.get('lugar_votacion', '').strip()
 
-    person = People.objects.all().order_by('id')
+    person = People.objects.select_related('referido_por').all().order_by('-activo', 'id')
 
     # Buscador general
     if buscar:
@@ -38,6 +39,14 @@ def ReadPerson(request):
         # Valor no numérico: no coincide con ningún registro
         person = person.none()
 
+    # Filtro por lugar de votación (texto libre).
+    # "sin_asignar" = personas creadas sin lugar (campo NULL).
+    # Cualquier otro valor se busca como nombre exacto.
+    if lugar_votacion == 'sin_asignar':
+        person = person.filter(lugar_votacion__isnull=True)
+    elif lugar_votacion:
+        person = person.filter(lugar_votacion__iexact=lugar_votacion)
+
     # Opciones para los filtros
     urbanizaciones = (
         People.objects
@@ -53,13 +62,21 @@ def ReadPerson(request):
         .order_by('nombre', 'apellido')
     )
 
+    # El total de personas sin lugar se calcula sobre el universo completo,
+    # no sobre el subconjunto filtrado, para que la tarjeta del enlace sea estable.
+    total_sin_lugar = People.objects.filter(lugar_votacion__isnull=True).count()
+
     return render(request, 'person/readperson.html', {
         'person': person,
         'buscar': buscar,
         'urbanizacion_actual': urbanizacion,
         'referido_actual': referido_por,
+        'lugar_actual': lugar_votacion,
         'urbanizaciones': urbanizaciones,
         'personas_referentes': personas_referentes,
+        'total_activas': person.filter(activo=True).count(),
+        'total_inactivas': person.filter(activo=False).count(),
+        'total_sin_lugar': total_sin_lugar,
         'page_title': 'Gestión de Personas',
         'page_subtitle': 'Administra el registro de personas'
     })
@@ -102,14 +119,35 @@ def UpdatePerson(request, id):
 
 @login_required_custom
 @admin_required
-def DeletePerson(request, id):
+def DeactivatePerson(request, id):
     person = get_object_or_404(People, id=id)
     if request.method == "POST":
-        person.delete()
-        messages.success(request, 'Persona eliminada correctamente')
+        if not person.activo:
+            messages.info(request, 'La persona ya se encontraba desactivada')
+            return redirect ('readperson')
+        person.activo = False
+        person.save(update_fields=['activo', 'fecha_actualizacion'])
+        messages.success(
+            request,
+            f'Persona desactivada. Se conserva su registro y el de sus {person.referidos.count()} referidos.'
+        )
         return redirect ('readperson')
-    return render(request, 'person/deleteperson.html', {
+    return render(request, 'person/deactivateperson.html', {
         'person': person,
-        'page_title': 'Eliminar Persona',
-        'page_subtitle': 'Esta acción es irreversible'
+        'referidos': person.referidos.all(),
+        'page_title': 'Desactivar Persona',
+        'page_subtitle': 'La persona dejará de aparecer como activa, pero su registro se conserva'
     })
+
+@login_required_custom
+@admin_required
+def ActivatePerson(request, id):
+    person = get_object_or_404(People, id=id)
+    if request.method == "POST":
+        if person.activo:
+            messages.info(request, 'La persona ya se encontraba activa')
+        else:
+            person.activo = True
+            person.save(update_fields=['activo', 'fecha_actualizacion'])
+            messages.success(request, 'Persona reactivada correctamente')
+    return redirect ('readperson')

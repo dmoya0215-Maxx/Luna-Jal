@@ -15,7 +15,7 @@ class PersonForm(forms.ModelForm):
 
         # Urbanización: Select con las opciones definidas.
         # Se permite conservar valores históricos que no estén en la lista.
-        opciones_urbanizacion = [('', 'Seleccione una urbanización')] + list(URBANIZACIONES)
+        opciones_urbanizacion = [('', 'Seleccione una urbanización o vereda')] + list(URBANIZACIONES)
         valor_actual = self.instance.urbanizacion if self.instance else ''
         if valor_actual and valor_actual not in dict(URBANIZACIONES):
             opciones_urbanizacion.append((valor_actual, valor_actual))
@@ -23,12 +23,54 @@ class PersonForm(forms.ModelForm):
         self.fields['urbanizacion'] = forms.ChoiceField(
             choices=opciones_urbanizacion,
             required=True,
+            label='Urbanización o vereda',
             error_messages={
                 'required': 'Seleccione una urbanización.',
                 'invalid_choice': 'Seleccione una urbanización válida.',
             },
             widget=forms.Select(attrs={'class': 'form-control custom-select'}),
         )
+
+        # Lugar de votación: texto libre y OPCIONAL. Vacío => NULL.
+        lugar_field = self.fields['lugar_votacion']
+        lugar_field.required = False
+        lugar_field.widget = forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Lugar de votación (opcional)',
+            'maxlength': 150,
+        })
+
+        # Mesa de votación: texto libre y OPCIONAL.
+        mesa_field = self.fields['mesa_votacion']
+        mesa_field.required = False
+        mesa_field.widget = forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Mesa de votación (opcional)',
+            'maxlength': 100,
+        })
+
+    def clean_lugar_votacion(self):
+        """Texto libre opcional. Vacío o solo espacios se guarda como NULL."""
+        lugar = (self.cleaned_data.get('lugar_votacion') or '').strip()
+        return lugar or None
+
+    def clean_mesa_votacion(self):
+        """Regla de integridad: la mesa exige un lugar de votación."""
+        lugar = self.cleaned_data.get('lugar_votacion')
+        mesa = (self.cleaned_data.get('mesa_votacion') or '').strip()
+
+        if not mesa:
+            return None
+
+        if not lugar:
+            raise forms.ValidationError(
+                'Indique primero el lugar de votación para asignar una mesa.'
+            )
+
+        if len(mesa) > 100:
+            raise forms.ValidationError('La mesa de votación no puede superar los 100 caracteres.')
+
+        return mesa
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre', '').strip()
@@ -81,6 +123,8 @@ class PersonForm(forms.ModelForm):
             'correo',
             'edad',
             'urbanizacion',
+            'lugar_votacion',
+            'mesa_votacion',
             'referido_por',
         ]
 

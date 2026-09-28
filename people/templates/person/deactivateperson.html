@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Desactivar Persona - Luna{% endblock %}
+{% block page_title %}Desactivar Persona{% endblock %}
+{% block breadcrumb_current %}Desactivar{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card" style="max-width:720px;margin:28px auto;border-top:4px solid rgba(245,158,11,0.18)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--border);">
+            <h3 style="margin:0;color:var(--warning)"><i data-lucide="user-x"></i> Confirmar desactivación</h3>
+        </div>
+
+        <div style="padding:22px">
+            <p style="text-align:center;margin:0 0 12px;font-size:1.05rem">¿Seguro que deseas desactivar esta persona?</p>
+
+            <div style="text-align:center;margin:16px 0">
+                <div style="font-size:48px;color:var(--muted)"><i data-lucide="user-x"></i></div>
+                <p style="margin:8px 0 0;font-weight:600">{{ person.nombre }} {{ person.apellido }}</p>
+                <p class="text-muted" style="margin:6px 0 0">ID: #{{ person.id }} | Creado: {{ person.fecha_creacion|date:"d/m/Y"|default:"—" }}</p>
+            </div>
+
+            <div style="background:rgba(16,185,129,0.05);padding:12px;border-radius:8px;border:1px solid rgba(16,185,129,0.12);">
+                <p style="margin:0;color:var(--success)"><strong>El registro se conserva.</strong> La persona no se borra: queda marcada como inactiva y podrás reactivarla cuando quieras desde la lista.</p>
+            </div>
+
+            {% if referidos %}
+                <div style="margin-top:14px">
+                    <p style="margin:0 0 8px"><strong>Esta persona abarca {{ referidos|length }} referido{% if referidos|length != 1 %}s{% endif %}.</strong> Su historial se mantiene intacto:</p>
+                    <ul class="text-muted" style="margin:0;padding-left:20px">
+                        {% for referido in referidos %}
+                            <li>{{ referido.nombre }} {{ referido.apellido }} — #{{ referido.id }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p class="text-muted" style="margin:14px 0 0;text-align:center">Esta persona no tiene referidos registrados.</p>
+            {% endif %}
+
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+                <a href="{% url 'readperson' %}" class="btn btn-outline">Cancelar</a>
+                <form method="post" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" style="background:linear-gradient(90deg,var(--warning),#d97706);color:white" onclick="return confirm('¿Desactivar a esta persona? Su registro se conserva y podrá reactivarla después.')">Confirmar desactivación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

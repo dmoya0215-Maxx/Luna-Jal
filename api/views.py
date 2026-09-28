@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from people.models import People
 from user.models import User
 from .serializers import PeopleSerializer, UserSerializer
@@ -38,6 +39,16 @@ class PeopleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsLoggedIn]
     queryset = People.objects.all()
     serializer_class = PeopleSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        person = self.get_object()
+        if person.activo:
+            person.activo = False
+            person.save(update_fields=['activo', 'fecha_actualizacion'])
+        return Response(
+            self.get_serializer(person).data,
+            status=status.HTTP_200_OK
+        )
 
 
 class UserViewSet(viewsets.ModelViewSet):

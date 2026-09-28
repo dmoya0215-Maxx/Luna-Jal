@@ -169,7 +169,7 @@ Luna/
 │   ├── templates/
 │   │   └── person/
 │   │       ├── createperson.html
-│   │       ├── deleteperson.html
+│   │       ├── deactivateperson.html
 │   │       ├── readperson.html
 │   │       └── updateperson.html
 │   ├── __init__.py
@@ -295,14 +295,21 @@ Luna/
 - `ReadPerson`
 - `CreatePerson`
 - `UpdatePerson`
-- `DeletePerson`
+- `DeactivatePerson`
+- `ActivatePerson`
+
+Las personas no se borran: se desactivan con `DeactivatePerson`, que marca
+`People.activo = False` sin eliminar la fila. Esto preserva el historial de
+`referido_por`, que además usa `on_delete=PROTECT` para impedir el borrado duro
+de un referente. `ActivatePerson` las reactiva.
 
 **URLs relacionadas:**
 
 - `/person/`
 - `/person/create/`
 - `/person/update/<int:id>/`
-- `/person/delete/<int:id>/`
+- `/person/deactivate/<int:id>/`
+- `/person/activate/<int:id>/`
 
 ### 3. `dashboard`
 
