@@ -641,6 +641,7 @@ Variables soportadas:
 - `DJANGO_SECRET_KEY`: opcional; clave secreta de Django.
 - `DJANGO_DEBUG`: opcional; `True` o `False`.
 - `DJANGO_ALLOWED_HOSTS`: opcional; hosts separados por comas.
+- `DJANGO_CSRF_TRUSTED_ORIGINS`: opcional; orígenes HTTPS permitidos para formularios (por defecto, los de Vercel).
 
 > Nota: con el pooler de Supabase en modo transacción se usa `conn_max_age=0`. Para ejecutar pruebas con `python manage.py test`, usa `--keepdb`: el pooler no permite cerrar la única sesión activa al eliminar la base de datos de prueba.
 

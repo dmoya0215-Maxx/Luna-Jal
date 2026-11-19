@@ -166,6 +166,11 @@ SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False  # Requerida False para poder leerla con JS si se usa
 SESSION_COOKIE_SAMESITE = 'Lax'
 SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    'https://luna-jal.vercel.app,https://*.vercel.app'
+).split(',')
 
 if not DEBUG:
     # Solo en producción: forzar HTTPS y cookies seguras
