@@ -44,7 +44,7 @@ def dashboard_view(request):
         base = base.exclude(urbanizacion__startswith=VEREDA_PREFIX)
 
     if buscar:
-        base = base.filter(urbanizacion__icontains=buscar)
+        base = base.filter(urbanizacion__unaccent__icontains=buscar)
 
     resumen = (
         base

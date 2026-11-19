@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-6.1-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![DRF](https://img.shields.io/badge/DRF-3.18-ff1709?logo=django&logoColor=white)](https://www.django-rest-framework.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-Local-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)](https://supabase.com/)
 [![Status](https://img.shields.io/badge/Estado-Desarrollo%20local-orange)]()
 
 Luna es un sistema web desarrollado con Django para gestionar usuarios y personas, y además expone una API REST con Django REST Framework para consultar y actualizar datos del sistema.
@@ -72,21 +72,23 @@ Las tecnologías que aparecen explícitamente en el proyecto son:
 - Python
 - Django 6.1
 - Django REST Framework 3.18.0
-- MySQL
+- PostgreSQL (Supabase)
 - HTML
 - CSS
 - JavaScript
 - drf-spectacular
-- SQLite no se usa como base de datos principal; la configuración activa es MySQL.
+- SQLite no se usa como base de datos principal; la configuración activa es PostgreSQL en Supabase.
 
 Se verificó en la configuración y en el entorno del proyecto que las bibliotecas instaladas incluyen, al menos:
 
 - Django
 - djangorestframework
 - drf-spectacular
-- mysqlclient
+- psycopg2-binary
+- dj-database-url
+- python-dotenv
 
-No se encontró un archivo `requirements.txt` en la raíz del proyecto. La instalación actual del entorno local se realizó con el entorno virtual incluido en `venv/`.
+Las dependencias están declaradas en `requirements.txt` en la raíz del proyecto.
 
 ## Arquitectura
 
@@ -123,7 +125,7 @@ La API está montada bajo el prefijo `/api/` y utiliza `DefaultRouter` de DRF.
 
 ### Base de datos
 
-La base de datos principal está configurada en MySQL. El proyecto usa migraciones de Django y define modelos concretos para `User`, `Person` y `Servicio`.
+La base de datos principal está configurada en PostgreSQL (Supabase) mediante la variable de entorno `DATABASE_URL`. El proyecto usa migraciones de Django y define modelos concretos para `User` y `People`.
 
 ### Comunicación entre componentes
 
@@ -542,7 +544,7 @@ La documentación OpenAPI de la API está habilitada con `drf-spectacular`.
 
 ## Instalación
 
-> Nota: No se encontró un archivo `requirements.txt` en la raíz del proyecto. Las dependencias se verificaron a partir del entorno virtual y la configuración activa del proyecto.
+> Nota: Las dependencias están declaradas en `requirements.txt` en la raíz del proyecto.
 
 ### 1. Clonar el repositorio
 
@@ -578,16 +580,22 @@ source venv/bin/activate
 
 ```bash
 python -m pip install --upgrade pip
-pip install Django==6.1.0 djangorestframework==3.18.0 drf-spectacular==0.30.0 mysqlclient==2.2.8
+pip install -r requirements.txt
 ```
 
-### 4. Crear la base de datos MySQL
+### 4. Configurar las variables de entorno
 
-Se requiere una base de datos MySQL disponible localmente. En la configuración actual se usa `luna` y el motor `django.db.backends.mysql`.
+Copia `.env.example` como `.env` y rellena `DATABASE_URL` con la cadena de conexión de Supabase (usa el pooler en el puerto `6543` y `sslmode=require`):
 
-```sql
-CREATE DATABASE luna;
+```bash
+cp .env.example .env
 ```
+
+```text
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@<region>.pooler.supabase.com:6543/postgres?sslmode=require
+```
+
+No se necesita crear la base de datos manualmente: Supabase ya proporciona `postgres`.
 
 ### 5. Ejecutar migraciones
 
@@ -615,26 +623,26 @@ La configuración del proyecto está en:
 
 ### Datos obligatorios observados
 
-- `SECRET_KEY`: valor hardcodeado en el código.
-- `DEBUG = True`
-- `ALLOWED_HOSTS = []`
-- `INSTALLED_APPS`: incluye `django.contrib.*`, `rest_framework`, `drf_spectacular`, `person`, `user`, `dashboard`, `api`
-- `DATABASES`: configuración MySQL local
+- `SECRET_KEY`: valor por defecto hardcodeado, sobrescribible con `DJANGO_SECRET_KEY`.
+- `DEBUG`: controlado por `DJANGO_DEBUG`.
+- `ALLOWED_HOSTS`: controlado por `DJANGO_ALLOWED_HOSTS`.
+- `INSTALLED_APPS`: incluye `django.contrib.*`, `django.contrib.postgres`, `rest_framework`, `drf_spectacular`, `people`, `user`, `dashboard`, `api`
+- `DATABASES`: configuración PostgreSQL desde `DATABASE_URL` usando `dj_database_url`
 - `STATIC_URL = '/static/'`
 - `STATICFILES_DIRS = [BASE_DIR / 'static']`
 
 ### Variables de entorno
 
-No existe un archivo `.env` ni una configuración de entorno en el repositorio. La configuración actual se define directamente en `settings.py`.
+La configuración sensible se lee desde `.env` (ignorado por Git) con `python-dotenv`. Existe un archivo `.env.example` como plantilla.
 
-Se recomienda, si se desea preparar el proyecto para un entorno más seguro, mover los datos sensibles a variables de entorno, especialmente:
+Variables soportadas:
 
-- `SECRET_KEY`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
-- `DB_HOST`
-- `DB_PORT`
+- `DATABASE_URL`: obligatoria; cadena de conexión PostgreSQL de Supabase.
+- `DJANGO_SECRET_KEY`: opcional; clave secreta de Django.
+- `DJANGO_DEBUG`: opcional; `True` o `False`.
+- `DJANGO_ALLOWED_HOSTS`: opcional; hosts separados por comas.
+
+> Nota: con el pooler de Supabase en modo transacción se usa `conn_max_age=0`. Para ejecutar pruebas con `python manage.py test`, usa `--keepdb`: el pooler no permite cerrar la única sesión activa al eliminar la base de datos de prueba.
 
 ## Uso del sistema
 

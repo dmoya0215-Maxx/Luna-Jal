@@ -17,11 +17,11 @@ def ReadPerson(request):
     # Buscador general
     if buscar:
         person = person.filter(
-            models.Q(nombre__icontains=buscar) |
-            models.Q(apellido__icontains=buscar) |
+            models.Q(nombre__unaccent__icontains=buscar) |
+            models.Q(apellido__unaccent__icontains=buscar) |
             models.Q(telefono__icontains=buscar) |
             models.Q(correo__icontains=buscar) |
-            models.Q(urbanizacion__icontains=buscar)
+            models.Q(urbanizacion__unaccent__icontains=buscar)
         )
 
     # Filtro por urbanización
